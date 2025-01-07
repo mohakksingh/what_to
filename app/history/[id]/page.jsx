@@ -8,8 +8,8 @@ import { useRouter } from "next/navigation";
 import { Alert } from "@/components/ui/alert";
 
 const HistoryItem = ({ params }) => {
-  const unWrappedParams=React.use(params)
-  const {id} = unWrappedParams;
+  const unWrappedParams = React.use(params);
+  const { id } = unWrappedParams;
   const [list, setList] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -76,20 +76,18 @@ const HistoryItem = ({ params }) => {
   }
 
   return (
-    <div className="container mx-auto py-8 px-4">
+    <div className="container mx-auto py-2 px-4">
       <Button variant="ghost" className="mb-6" onClick={() => router.back()}>
         <ArrowLeft className="w-4 h-4 mr-2" />
         Back
       </Button>
 
-      <Card className="mb-6">
-        <CardHeader>
-          <h1 className="text-3xl font-bold">{list.title}</h1>
-          <p className="text-gray-600">Category: {list.category}</p>
-        </CardHeader>
-      </Card>
+      <div className="text-white mb-10">
+        <h1 className="text-5xl font-bold mb-2 text-center">{list.title}</h1>
+        <p className="text-gray-600 text-center text-xl">Category: {list.category}</p>
+      </div>
 
-      <div className="grid gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {list.items?.map((item) => (
           <Card key={item.id}>
             <CardContent className="p-6">
