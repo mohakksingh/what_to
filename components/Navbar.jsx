@@ -1,37 +1,39 @@
-'use client'
+"use client";
 
-import Link from 'next/link'
-import { useSession } from 'next-auth/react'
-import { Button } from '@/components/ui/button'
+import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Home, History, LogOut, User, Plus } from 'lucide-react'
-import { signOut } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
+} from "@/components/ui/dropdown-menu";
+import { Home, History, LogOut, User, Plus } from "lucide-react";
+import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
-  const { data: session } = useSession()
-  const router = useRouter()
+  const { data: session } = useSession();
+  const router = useRouter();
 
   return (
-    <nav className="border-b">
+    <nav className="border-b bg-black">
       <div className="container mx-auto flex items-center justify-between p-4">
-        <Link href="/" className="text-xl font-bold">WhatTo?</Link>
-        
+        <Link href="/" className="text-xl font-bold text-white">
+          WhatTo?
+        </Link>
+
         {session ? (
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" asChild>
+            <Button variant="default" asChild>
               <Link href="/main">
                 <Home className="w-4 h-4 mr-2" />
                 Home
               </Link>
             </Button>
-            
-            <Button variant="default" asChild>
+
+            <Button variant="outline" asChild>
               <Link href="/main/create">
                 <Plus className="w-4 h-4 mr-2" />
                 Create WhatTo
@@ -40,7 +42,7 @@ export default function Navbar() {
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative">
+                <Button variant="default" className="relative">
                   <User className="w-4 h-4" />
                 </Button>
               </DropdownMenuTrigger>
@@ -60,7 +62,7 @@ export default function Navbar() {
           </div>
         ) : (
           <div className="space-x-4">
-            <Button variant="ghost" asChild>
+            <Button variant="default" asChild>
               <Link href="/login">Login</Link>
             </Button>
             <Button asChild>
@@ -70,5 +72,5 @@ export default function Navbar() {
         )}
       </div>
     </nav>
-  )
+  );
 }

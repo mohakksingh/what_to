@@ -38,8 +38,8 @@ export default function HistoryPage() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-[calc(100vh-4rem)]">
-        <Loader2 className="w-6 h-6 animate-spin" />
+      <div className="flex justify-center items-center min-h-[calc(100vh-4rem)] bg-black">
+        <Loader2 className="w-6 h-6 animate-spin text-white" />
       </div>
     )
   }
@@ -53,19 +53,21 @@ export default function HistoryPage() {
   }
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      <h1 className="text-3xl font-bold mb-8">Your History</h1>
+    <div className='bg-black'>
+
+    <div className="container mx-auto py-8 px-4  ">
+      <h1 className="text-3xl font-bold mb-8 text-white">Your History</h1>
       
-      <div className="grid gap-6">
+      <div className="grid gap-6 ">
         {lists.map((list) => (
           <Card 
-            key={list.id}
-            className="cursor-pointer hover:shadow-lg transition-shadow"
-            onClick={() => handleListClick(list.id)}
+          key={list.id}
+          className="cursor-pointer hover:shadow-md transition-shadow bg-black border-[#d6d3d1] border-2 hover:shadow-[#d6d3d1]"
+          onClick={() => handleListClick(list.id)}
           >
             <CardHeader>
               <div className="flex justify-between items-center">
-                <h2 className="text-xl font-semibold">{list.title}</h2>
+                <h2 className="text-xl font-semibold text-white">{list.title}</h2>
                 <span className="text-sm text-gray-500">
                   {formatDistance(new Date(list.createdAt), new Date(), { addSuffix: true })}
                 </span>
@@ -73,26 +75,26 @@ export default function HistoryPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
-                <p className="text-gray-600">Category: {list.category}</p>
-                <p className="text-gray-600">
+                <p className="text-[#e2e8f0]">Category: {list.category}</p>
+                <p className="text-[#e2e8f0]">
                   Items: {list.items?.length ?? 0}
                 </p>
                 {list.items?.length > 0 && (
-                  <p className="text-gray-600">
+                  <p className="text-[#e2e8f0]">
                     Most voted: {
                       list.items.reduce((prev, current) => 
                         ((prev.votes?.length ?? 0) > (current.votes?.length ?? 0)) ? prev : current
-                      ).name
-                    }
+                    ).name
+                  }
                   </p>
                 )}
                 <Button 
-                  className="mt-4"
+                  className="mt-5 text-white"
                   onClick={(e) => {
                     e.stopPropagation();
                     handleListClick(list.id);
                   }}
-                >
+                  >
                   View Details
                 </Button>
               </div>
@@ -112,5 +114,6 @@ export default function HistoryPage() {
         )}
       </div>
     </div>
+        </div>
   )
 }
