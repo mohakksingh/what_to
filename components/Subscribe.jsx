@@ -1,9 +1,5 @@
 import React from "react";
-import { motion } from "framer-motion";
-import { HeroHighlight, Highlight } from "./ui/hero-highlight";
-import { Button } from "./ui/button";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 
 const Subscribe = () => {
   return (

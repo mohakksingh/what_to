@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { Alert } from "@/components/ui/alert";
 import useStore from "@/store/useStore";
 
 export default function CreateList() {

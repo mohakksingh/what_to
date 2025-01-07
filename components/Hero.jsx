@@ -1,4 +1,3 @@
-import { HoverBorderGradient } from "./ui/hover-border-gradient";
 import { SparklesCore } from "./ui/sparkles";
 
 const Hero = () => {

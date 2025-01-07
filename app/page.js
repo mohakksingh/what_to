@@ -1,6 +1,3 @@
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { ArrowRight, List, Share, ThumbsUp } from "lucide-react";
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
 import { Working } from "@/components/Working";

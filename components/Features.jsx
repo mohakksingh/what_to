@@ -1,9 +1,6 @@
 "use client";
 import React from "react";
-import { motion } from "framer-motion";
-import { HeroHighlight, Highlight } from "./ui/hero-highlight";
 import { WavyBackground } from "./ui/wavy-background";
-import Image from "next/image";
 import { StickyScroll } from "./ui/sticky-scroll-reveal";
 
 const content = [
