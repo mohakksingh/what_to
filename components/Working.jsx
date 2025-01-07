@@ -5,11 +5,11 @@ import { Timeline } from "@/components/ui/timeline";
 export const Working = () => {
     const data = [
         {
-          title: "2024",
+          title: "Step 1",
           content: (
             <div>
               <p className="text-neutral-200 text-xs md:text-sm font-normal mb-8">
-                Built and launched Aceternity UI and Aceternity UI Pro from scratch
+                Add a title and the category of the list you want to create for voting.
               </p>
               <div className="grid grid-cols-2 gap-4">
                 {/* <Image
@@ -45,16 +45,14 @@ export const Working = () => {
           ),
         },
         {
-          title: "Early 2023",
+          title: "Step 2",
           content: (
             <div>
               <p className="text-neutral-200 text-xs md:text-sm font-normal mb-8">
-                I usually run out of copy, but when I see content this big, I try to
-                integrate lorem ipsum.
+                Then add an item for the list.
               </p>
               <p className="text-neutral-200 text-xs md:text-sm font-normal mb-8">
-                Lorem ipsum is for people who are too lazy to write copy. But we are
-                not. Here are some more example of beautiful designs I built.
+                For more clarity you can add a description to the item as well as image.
               </p>
               <div className="grid grid-cols-2 gap-4">
                 {/* <Image
@@ -90,27 +88,27 @@ export const Working = () => {
           ),
         },
         {
-          title: "Changelog",
+          title: "Step 3",
           content: (
             <div>
               <p className="text-neutral-200 text-xs md:text-sm font-normal mb-4">
-                Deployed 5 new components on Aceternity today
+                Your list would be ready to share with your friends and family.
               </p>
               <div className="mb-8">
                 <div className="flex gap-2 items-center text-neutral-300 text-xs md:text-sm">
-                  ✅ Card grid component
+                  ✅ Places I want to Travel
                 </div>
                 <div className="flex gap-2 items-center text-neutral-300 text-xs md:text-sm">
-                  ✅ Startup template Aceternity
+                  ✅ Travel
                 </div>
                 <div className="flex gap-2 items-center text-neutral-300 text-xs md:text-sm">
-                  ✅ Random file upload lol
+                  ✅ Jibhi
                 </div>
                 <div className="flex gap-2 items-center text-neutral-300 text-xs md:text-sm">
-                  ✅ Himesh Reshammiya Music CD
+                  ✅ Goa
                 </div>
                 <div className="flex gap-2 items-center text-neutral-300 text-xs md:text-sm">
-                  ✅ Salman Bhai Fan Club registrations open
+                  ✅ Kashmir
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">

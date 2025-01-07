@@ -12,6 +12,7 @@ import {
 import { Home, History, LogOut, User, Plus } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function Navbar() {
   const { data: session } = useSession();
@@ -20,9 +21,12 @@ export default function Navbar() {
   return (
     <nav className="border-b bg-black">
       <div className="container mx-auto flex items-center justify-between p-4">
-        <Link href="/" className="text-xl font-bold text-white">
-          WhatTo?
-        </Link>
+        <div className="flex flex-row space-x-2">
+          <Image src={"/logo.webp"} width={25} height={20} alt="logo" className="rounded-md" />
+          <Link href="/" className="text-xl font-bold text-white">
+            WhatTo?
+          </Link> 
+        </div>
 
         {session ? (
           <div className="flex items-center space-x-4">
