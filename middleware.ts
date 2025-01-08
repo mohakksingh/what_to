@@ -3,7 +3,6 @@ import { NextResponse } from 'next/server'
 
 export default withAuth(
   function middleware(req) {
-    // Add any custom logic here
     return NextResponse.next()
   },
   {

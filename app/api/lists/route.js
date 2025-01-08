@@ -37,7 +37,7 @@ export async function POST(request) {
     // If we have an id, update existing list, otherwise create new
     if (data.id) {
       // Update existing list
-      const list = await prisma.list.upsert({
+      const list = await prisma.list.create({
         where: {
           id: data.id // Use the list ID as unique identifier
         },

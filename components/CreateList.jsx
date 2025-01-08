@@ -33,6 +33,7 @@ export default function CreateList() {
     setItems(newItems);
   };
 
+
   async function handleSubmit(e) {
     e.preventDefault()
     setLoading(true)
@@ -47,9 +48,13 @@ export default function CreateList() {
 
     try {
         if(listId===null){
+            console.log("Hello list")
             await createList(listData)
+            console.log(createList,"list")
         }else{
+            console.log("UpdatedList")
             await updateList(listData,listId)
+            console.log(updateList,listId,"updatedlist")
         }
       await createList(listData)  
       await fetchItems(listId)
@@ -65,13 +70,6 @@ export default function CreateList() {
     <div className="container mx-auto py-8 px-4">
       <Card className="max-w-2xl  p-6">
         <h1 className="text-2xl font-bold mb-6">Create New WhatTo List</h1>
-
-        {/* {error && (
-          <Alert variant="destructive" className="mb-4">
-            {error}
-          </Alert>
-        )} */}
-
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-sm font-medium mb-2">List Title</label>

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
@@ -14,26 +14,24 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const inter=Inter({
-  subsets:["latin"]
-})
+const inter = Inter({
+  subsets: ["latin"],
+});
 
 const metadata = {
-  title: 'WhatTo? - Make Better Decisions',
-  description: 'Create and vote on lists for anything',
-}
-
+  title: "WhatTo? - Make Better Decisions",
+  description: "Create and vote on lists for anything",
+};
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body
-        className={`${inter.className}  bg-black`}
-      >
+      <body className={`${inter.className}  bg-black`}>
         <SessionProvider>
-        <Navbar/>
-        {children}
-      </SessionProvider>
+          <Navbar />
+          
+          {children}
+        </SessionProvider>
       </body>
     </html>
   );

@@ -107,7 +107,7 @@ export default function HistoryPage() {
             <CardContent className="p-6 text-center">
               <p className="text-gray-600">No lists created yet.</p>
               <Button asChild className="mt-4">
-                <Link href="/lists/create">Create Your First List</Link>
+                <Link href="/main">Create Your First List</Link>
               </Button>
             </CardContent>
           </Card>
