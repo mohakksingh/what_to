@@ -37,6 +37,7 @@ export default function LoginPage() {
       }
 
       router.push('/main')
+      router.refresh()
     } catch (error) {
       setError('An error occurred. Please try again.')
     } finally {
