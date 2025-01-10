@@ -10,7 +10,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "./ui/button";
-import { Shuffle, ThumbsUp } from "lucide-react";
+import { Shuffle, ThumbsUp, Share } from "lucide-react"; // Import the Share icon
 import toast, { Toaster } from "react-hot-toast";
 
 const ListItems = () => {
@@ -19,9 +19,11 @@ const ListItems = () => {
   const [randomItem, setRandomItem] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isVoting, setIsVoting] = useState(false);
-  const [loading, setLoading] = useState(false); // Changed to false by default
+  const [loading, setLoading] = useState(false);
+  const [shareLink, setShareLink] = useState(""); // State to store the sharable link
   const fetchListItems = useStore((state) => state.fetchListItems);
   const listId = useStore((state) => state.listId);
+  const itemsCheck = useStore((state) => state.items);
 
   useEffect(() => {
     const loadItems = async () => {
@@ -37,29 +39,19 @@ const ListItems = () => {
       }
     };
 
-    // Only start loading if we have a listId
     if (listId) {
       loadItems();
     } else {
-      // Reset states when listId is null
       setItems([]);
       setError("");
       setLoading(false);
     }
   }, [fetchListItems, listId]);
 
-  if (!listId) {
-    return (
-      <div className="flex justify-center items-center p-8 w-full">
-        <p className="text-gray-500">Create a list to view items</p>
-      </div>
-    );
-  }
 
   const handleVote = async (itemId) => {
     try {
       setIsVoting(true);
-      console.log(JSON.stringify({itemId}))
       const response = await fetch(`/api/vote`, {
         method: "POST",
         headers: {
@@ -67,24 +59,23 @@ const ListItems = () => {
         },
         body: JSON.stringify({ itemId }),
       });
-      console.log(response)
       if (!response.ok) {
         const error = await response.json();
+        throw new Error(error.error || "Failed to vote");
       }
       const data = await response.json();
-      setItems(prevItems =>
-        prevItems.map(item =>
+      setItems((prevItems) =>
+        prevItems.map((item) =>
           item.id === itemId
             ? {
                 ...item,
-                // Ensure votes is always an array
-                votes: Array.isArray(item.votes) 
-                  ? data.action === 'added'
-                    ? [...item.votes, { id: 'temp' }]  // Add temporary vote
-                    : item.votes.slice(0, -1)  // Remove one vote
-                  : data.action === 'added' 
-                    ? [{ id: 'temp' }]  // Create new votes array
-                    : []  // Empty array if removing vote
+                votes: Array.isArray(item.votes)
+                  ? data.action === "added"
+                    ? [...item.votes, { id: "temp" }]
+                    : item.votes.slice(0, -1)
+                  : data.action === "added"
+                  ? [{ id: "temp" }]
+                  : [],
               }
             : item
         )
@@ -102,6 +93,45 @@ const ListItems = () => {
     setRandomItem(items[randomIndex]);
     setIsDialogOpen(true);
   };
+
+  const handleShare = async () => {
+    try {
+      // Fetch the share token for the current list
+      const response = await fetch(`/api/lists/${listId}/share`, {
+        method: "POST",
+      });
+  
+      // Check if the response is OK
+      if (!response.ok) {
+        throw new Error("Failed to generate share link");
+      }
+  
+      // Parse the response JSON
+      const data = await response.json();
+  
+      // Ensure the response contains the shareToken
+      if (!data.shareToken) {
+        throw new Error("No share token found in the response");
+      }
+  
+      // Construct the sharable link
+      const link = `${window.location.origin}/share/${data.shareToken}`;
+      setShareLink(link);
+  
+      // Copy the link to the clipboard
+      navigator.clipboard.writeText(link);
+      toast.success("Sharable link copied to clipboard!");
+    } catch (error) {
+      toast.error(error.message || "Failed to generate share link");
+    }
+  };
+  if (!listId) {
+    return (
+      <div className="flex justify-center items-center p-8 w-full">
+        <p className="text-gray-500">Create a list to view items</p>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
@@ -169,7 +199,7 @@ const ListItems = () => {
         ))}
       </div>
 
-      <div className="mt-8 flex justify-center">
+      <div className="mt-8 flex justify-center gap-4">
         <div className="bg-gray-50 p-6 rounded-lg flex items-center gap-4">
           <span className="text-gray-700">Still confused?</span>
           <Button
@@ -179,6 +209,16 @@ const ListItems = () => {
           >
             <Shuffle className="w-4 h-4" />
             Randomize
+          </Button>
+        </div>
+        <div className="bg-gray-50 p-6 rounded-lg flex items-center gap-4">
+          <Button
+            variant="default"
+            onClick={handleShare}
+            className="flex items-center gap-2"
+          >
+            <Share className="w-4 h-4" />
+            Share Link
           </Button>
         </div>
       </div>

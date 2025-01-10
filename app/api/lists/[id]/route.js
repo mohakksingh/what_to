@@ -2,10 +2,11 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/route";
 import { PrismaClient } from "@prisma/client";
 
+
 const prisma = new PrismaClient();
 
 export async function GET(request, { params }) {
-    const { id } = params;
+    const { id } =await params;
     
     const session = await getServerSession(authOptions);
     if (!session) {
@@ -46,8 +47,10 @@ export async function GET(request, { params }) {
     }
 }
 
+//well good enough but the signup/signin page design very good even giving background detailing and detailing in the background of list view , and I am not abl
+
 export async function PUT(request, { params }) {
-  const { id } = params;
+  const { id } =await params;
 
   const session = await getServerSession(authOptions);
   if (!session) {

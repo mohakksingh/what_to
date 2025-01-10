@@ -48,15 +48,10 @@ export default function CreateList() {
 
     try {
         if(listId===null){
-            console.log("Hello list")
             await createList(listData)
-            console.log(createList,"list")
         }else{
-            console.log("UpdatedList")
             await updateList(listData,listId)
-            console.log(updateList,listId,"updatedlist")
         }
-      await createList(listData)  
       await fetchItems(listId)
       console.log(listId)
     }catch (error) {

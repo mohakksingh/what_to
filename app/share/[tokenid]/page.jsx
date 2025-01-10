@@ -1,75 +1,97 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, ArrowLeft, ThumbsUp } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { Alert } from "@/components/ui/alert";
+import { Loader2, ArrowLeft, ThumbsUp } from "lucide-react";  
+import toast, { Toaster } from "react-hot-toast";
 
-const HistoryItem = ({ params }) => {
+const SharePage = ({params}) => {
   const unWrappedParams = React.use(params);
-  const { id } = unWrappedParams;
+    const { tokenid } = unWrappedParams;
   const [list, setList] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const router = useRouter();
 
   useEffect(() => {
-    async function fetchListDetails() {
+    if (!tokenid) return; // Wait until tokenid is available
+
+    const fetchList = async () => {
       try {
-        const response = await fetch(`/api/lists/${id}`);
-        if (!response.ok) throw new Error("Failed to fetch list details");
+        const response = await fetch(`/api/share/${tokenid}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch list");
+        }
         const data = await response.json();
-        setList(data.data);
+        setList(data);
       } catch (error) {
-        setError("Failed to load list details");
+        setError(error.message);
+        toast.error("Failed to load the list");
       } finally {
         setLoading(false);
       }
-    }
+    };
 
-    if (id) {
-      fetchListDetails();
-    }
-  }, [id]);
+    fetchList();
+  }, [tokenid]);
 
   const handleVote = async (itemId) => {
     try {
-      const response = await fetch(`/api/lists/${id}/item/${itemId}/vote`, {
+      const response = await fetch(`/api/vote`, {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ itemId }),
       });
-      if (!response.ok) throw new Error("Failed to vote");
-
-      // Refresh the list data
-      const updatedListResponse = await fetch(`/api/lists/${id}`);
-      const { data } = await updatedListResponse.json();
-      setList(data);
+      if (!response.ok) {
+        throw new Error("Failed to vote");
+      }
+      const data = await response.json();
+      setList((prevList) => ({
+        ...prevList,
+        items: prevList.items.map((item) =>
+          item.id === itemId
+            ? {
+                ...item,
+                votes: Array.isArray(item.votes)
+                  ? data.action === "added"
+                    ? [...item.votes, { id: "temp" }]
+                    : item.votes.slice(0, -1)
+                  : data.action === "added"
+                  ? [{ id: "temp" }]
+                  : [],
+              }
+            : item
+        ),
+      }));
+      toast.success("Your vote has been recorded");
     } catch (error) {
-      setError("Failed to vote");
+      toast.error(error.message || "Failed to process your vote");
     }
   };
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-[calc(100vh-4rem)]">
-        <Loader2 className="w-6 h-6 animate-spin" />
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-gray-500">Loading...</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="container mx-auto py-8 px-4">
-        <Alert variant="destructive">{error}</Alert>
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-red-500">{error}</p>
       </div>
     );
   }
 
   if (!list) {
     return (
-      <div className="container mx-auto py-8 px-4">
-        <Alert variant="destructive">List not found</Alert>
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-gray-500">List not found</p>
       </div>
     );
   }
@@ -119,4 +141,4 @@ const HistoryItem = ({ params }) => {
   );
 };
 
-export default HistoryItem;
+export default SharePage;

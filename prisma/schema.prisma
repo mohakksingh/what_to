@@ -30,6 +30,7 @@ model List {
   items       Item[]
   creator     User      @relation(fields: [creatorId], references: [id])
   creatorId   String
+  shareToken  String? @unique
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }

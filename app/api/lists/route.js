@@ -1,6 +1,7 @@
 import { getServerSession } from 'next-auth/next'
 import { PrismaClient } from '@prisma/client'
 import { authOptions } from '../auth/[...nextauth]/route'
+import { v4 as uuidv4 } from 'uuid' 
 
 const prisma = new PrismaClient()
 
@@ -33,6 +34,7 @@ export async function POST(request) {
 
   try {
     const data = await request.json()
+    const shareToken=uuidv4()
     
     // If we have an id, update existing list, otherwise create new
     if (data.id) {
@@ -46,6 +48,7 @@ export async function POST(request) {
           title: data.title,
           category: data.category,
           creatorId: session.user.id,
+          shareToken: shareToken,
           items: {
             create: data.items.map(item => ({
               name: item.name,
@@ -76,6 +79,7 @@ export async function POST(request) {
         data: {
           title: data.title,
           category: data.category,
+          shareToken: shareToken,
           creatorId: session.user.id,
           items: {
             create: data.items.map(item => ({

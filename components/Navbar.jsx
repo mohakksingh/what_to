@@ -31,14 +31,14 @@ export default function Navbar() {
         {session ? (
           <div className="flex items-center space-x-4">
             <Button variant="default" asChild>
-              <Link href="/main">
+              <Link href="/">
                 <Home className="w-4 h-4 mr-2" />
                 Home
               </Link>
             </Button>
 
             <Button variant="outline" asChild>
-              <Link href="/main/create">
+              <Link href="/main">
                 <Plus className="w-4 h-4 mr-2" />
                 Create WhatTo
               </Link>
