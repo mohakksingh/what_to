@@ -4,16 +4,17 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, ArrowLeft, ThumbsUp } from "lucide-react";  
+import { Loader2, ArrowLeft, ThumbsUp } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 
-const SharePage = ({params}) => {
+const SharePage = ({ params }) => {
   const unWrappedParams = React.use(params);
-    const { tokenid } = unWrappedParams;
+  const { tokenid } = unWrappedParams;
   const [list, setList] = useState(null);
-  const [isVoting,setIsVoting]= useState(false);
+  const [isVoting, setIsVoting] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
     if (!tokenid) return; // Wait until tokenid is available
@@ -40,6 +41,7 @@ const SharePage = ({params}) => {
   const handleVote = async (itemId) => {
     try {
       setIsVoting(true);
+
       const response = await fetch(`/api/vote`, {
         method: "POST",
         headers: {
@@ -47,26 +49,28 @@ const SharePage = ({params}) => {
         },
         body: JSON.stringify({ itemId }),
       });
-  
+
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || "Failed to vote");
+        // Handle non-JSON responses (e.g., 500 errors)
+        const errorText = await response.text();
+        throw new Error(errorText || "Failed to vote");
       }
-  
+
       const data = await response.json();
-  
+
       // Update the items state with the new vote count
-      setItems((prevItems) =>
-        prevItems.map((item) =>
+      setList((prevList) => ({
+        ...prevList,
+        items: prevList.items.map((item) =>
           item.id === itemId
             ? {
                 ...item,
-                votes: Array.from({ length: data.voteCount }), // Simulate votes array
+                votes: { voteCount: data.voteCount },
               }
             : item
-        )
-      );
-  
+        ),
+      }));
+
       toast.success(`Vote ${data.action} successfully!`);
     } catch (error) {
       toast.error(error.message || "Failed to process your vote");
@@ -101,6 +105,7 @@ const SharePage = ({params}) => {
 
   return (
     <div className="container mx-auto py-2 px-4">
+      <Toaster />
       <Button variant="ghost" className="mb-6" onClick={() => router.back()}>
         <ArrowLeft className="w-4 h-4 mr-2" />
         Back
@@ -108,7 +113,9 @@ const SharePage = ({params}) => {
 
       <div className="text-white mb-10">
         <h1 className="text-5xl font-bold mb-2 text-center">{list.title}</h1>
-        <p className="text-gray-600 text-center text-xl">Category: {list.category}</p>
+        <p className="text-gray-600 text-center text-xl">
+          Category: {list.category}
+        </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

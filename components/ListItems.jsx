@@ -66,6 +66,7 @@ const ListItems = () => {
         },
         body: JSON.stringify({ itemId }),
       });
+      
   
       if (!response.ok) {
         const error = await response.json();
@@ -85,6 +86,7 @@ const ListItems = () => {
             : item
         )
       );
+
   
       toast.success(`Vote ${data.action} successfully!`);
     } catch (error) {

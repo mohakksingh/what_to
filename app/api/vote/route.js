@@ -9,16 +9,15 @@ export async function POST(request) {
   console.log("Received request");
   const session = await getServerSession(authOptions);
 
-  // Check if the user is authenticated
   if (!session) {
-    return new Response("Unauthorized", { status: 401 });
-  }
+    return new Response("Unauthorized", { status: 401 });  }
+
 
   try {
-    const { itemId } = await request.json();
-    console.log("Item ID:", itemId);
+    const payload = await request.json();
 
-    // Validate itemId
+    const { itemId } = payload;
+
     if (!itemId) {
       return NextResponse.json(
         { error: "Item ID is required" },
@@ -26,7 +25,12 @@ export async function POST(request) {
       );
     }
 
-    // Check if the item exists
+    if (!session.user?.id) {
+      return NextResponse.json(
+        { error: "User ID is missing in session" },
+        { status: 400 }
+      );
+    }
     const item = await prisma.item.findUnique({
       where: { id: itemId },
     });
@@ -46,8 +50,6 @@ export async function POST(request) {
       },
     });
 
-    console.log("Existing vote:", existingVote);
-
     let result;
     let action;
 
@@ -59,17 +61,15 @@ export async function POST(request) {
         },
       });
       action = "removed";
-      console.log("Vote deleted:", result);
     } else {
       // If the user hasn't voted, add a new vote
       result = await prisma.vote.create({
         data: {
-          userId: session.user.id,
+          userId: session.user.id, // Ensure this is valid
           itemId: itemId,
         },
       });
       action = "added";
-      console.log("Vote created:", result);
     }
 
     // Get the updated vote count for the item
@@ -84,9 +84,8 @@ export async function POST(request) {
       voteCount: updatedVoteCount,
     });
   } catch (error) {
-    console.error("Error processing vote:", error);
     return NextResponse.json(
-      { error: "Failed to process vote" },
+      { error: "Failed to process vote", details: error.message }, // Include error details
       { status: 500 }
     );
   }
