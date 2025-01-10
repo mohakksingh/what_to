@@ -11,6 +11,7 @@ const SharePage = ({params}) => {
   const unWrappedParams = React.use(params);
     const { tokenid } = unWrappedParams;
   const [list, setList] = useState(null);
+  const [isVoting,setIsVoting]= useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
