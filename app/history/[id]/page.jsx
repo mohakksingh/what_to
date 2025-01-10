@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader2, ArrowLeft, ThumbsUp } from "lucide-react";
 import { useRouter } from "next/navigation";
+import toast, { Toaster } from "react-hot-toast";
 import { Alert } from "@/components/ui/alert";
 
 const HistoryItem = ({ params }) => {
@@ -12,6 +13,7 @@ const HistoryItem = ({ params }) => {
   const { id } = unWrappedParams;
   const [list, setList] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isVoting, setIsVoting] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
 
@@ -36,17 +38,40 @@ const HistoryItem = ({ params }) => {
 
   const handleVote = async (itemId) => {
     try {
-      const response = await fetch(`/api/lists/${id}/item/${itemId}/vote`, {
+      setIsVoting(true);
+      const response = await fetch(`/api/vote`, {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ itemId }),
       });
-      if (!response.ok) throw new Error("Failed to vote");
-
-      // Refresh the list data
-      const updatedListResponse = await fetch(`/api/lists/${id}`);
-      const { data } = await updatedListResponse.json();
-      setList(data);
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Failed to vote");
+      }
+      const data = await response.json();
+      setItems((prevItems) =>
+        prevItems.map((item) =>
+          item.id === itemId
+            ? {
+                ...item,
+                votes: Array.isArray(item.votes)
+                  ? data.action === "added"
+                    ? [...item.votes, { id: "temp" }]
+                    : item.votes.slice(0, -1)
+                  : data.action === "added"
+                  ? [{ id: "temp" }]
+                  : [],
+              }
+            : item
+        )
+      );
+      toast.success("Your vote has been recorded");
     } catch (error) {
-      setError("Failed to vote");
+      toast.error(error.message || "Failed to process your vote");
+    } finally {
+      setIsVoting(false);
     }
   };
 
