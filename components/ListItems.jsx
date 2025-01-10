@@ -198,7 +198,7 @@ const ListItems = () => {
                   className="flex items-center gap-2 hover:bg-gray-100"
                 >
                   <ThumbsUp className="w-4 h-4" />
-                  <span>{item.votes?.length ?? 0}</span>
+                  <span>{item.votes?.voteCount ?? 0}</span>
                 </Button>
               </div>
             </CardContent>

@@ -132,7 +132,7 @@ const SharePage = ({params}) => {
                 <div className="flex items-center">
                   <Button variant="outline" onClick={() => handleVote(item.id)}>
                     <ThumbsUp className="w-4 h-4 mr-2" />
-                    {item.votes?.length ?? 0}
+                    {item.votes?.voteCount ?? 0}
                   </Button>
                 </div>
               </div>
