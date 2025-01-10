@@ -16,16 +16,21 @@ import Image from "next/image";
 
 export default function Navbar() {
   const { data: session } = useSession();
-  const router = useRouter();
 
   return (
     <nav className="border-b bg-black">
       <div className="container mx-auto flex items-center justify-between p-4">
         <div className="flex flex-row space-x-2">
-          <Image src={"/logo.webp"} width={25} height={20} alt="logo" className="rounded-md" />
+          <Image
+            src={"/logo.webp"}
+            width={25}
+            height={20}
+            alt="logo"
+            className="rounded-md"
+          />
           <Link href="/" className="text-xl font-bold text-white">
             WhatTo?
-          </Link> 
+          </Link>
         </div>
 
         {session ? (

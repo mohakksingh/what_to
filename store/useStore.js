@@ -5,6 +5,8 @@ const useStore = create((set,get) => ({
   items: [],
   listId: null,
   setCurrentList: (list) => set({ currentList: list }),
+  refetchTrigger:false,
+  toggleRefetchTrigger:()=>set((state)=>({refetchTrigger:!state.refetchTrigger})),
 
   createList: async (listData) => {
     try {
@@ -40,6 +42,7 @@ const useStore = create((set,get) => ({
   },
 
   addItem: async (item) => {
+
     try {
       const response = await fetch(`/api/lists/${item.listId}`, {
         method: "POST",
@@ -62,7 +65,7 @@ const useStore = create((set,get) => ({
       console.error("Error adding item:", error);
       throw error;
     }
-  },
+  },  
 
   addVote: async (itemId) => {
     try {
@@ -97,7 +100,6 @@ const useStore = create((set,get) => ({
         currentList: data,
         items: data.items || [],
       });
-      console.log(data);
       return data;
     } catch (error) {
       console.error("Error fetching list:", error);

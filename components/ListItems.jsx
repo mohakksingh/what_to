@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Alert } from "@/components/ui/alert";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import useStore from "@/store/useStore";
 import {
   Dialog,
@@ -12,6 +12,8 @@ import {
 import { Button } from "./ui/button";
 import { Shuffle, ThumbsUp, Share } from "lucide-react"; // Import the Share icon
 import toast, { Toaster } from "react-hot-toast";
+import { list } from "postcss";
+import { data } from "autoprefixer";
 
 const ListItems = () => {
   const [items, setItems] = useState([]);
@@ -21,7 +23,9 @@ const ListItems = () => {
   const [isVoting, setIsVoting] = useState(false);
   const [loading, setLoading] = useState(false);
   const [shareLink, setShareLink] = useState(""); // State to store the sharable link
+  const [title,setTitle]=useState("")
   const fetchListItems = useStore((state) => state.fetchListItems);
+  const refetchTrigger = useStore((state) => state.refetchTrigger);
   const listId = useStore((state) => state.listId);
   const itemsCheck = useStore((state) => state.items);
 
@@ -30,7 +34,10 @@ const ListItems = () => {
       try {
         setLoading(true);
         const data = await fetchListItems(listId);
+        console.log(data,"data")
         setItems(data.items || []);
+        setTitle(data.title);
+
       } catch (err) {
         setError("Failed to load list items");
         console.error("Error loading items:", err);
@@ -46,7 +53,7 @@ const ListItems = () => {
       setError("");
       setLoading(false);
     }
-  }, [fetchListItems, listId]);
+  }, [fetchListItems, listId,refetchTrigger]);
 
 
   const handleVote = async (itemId) => {
@@ -161,6 +168,7 @@ const ListItems = () => {
     <div className="container mx-auto py-8 px-4">
       <Toaster />
       <div className="flex flex-col w-full gap-6">
+        <h2 className="text-3xl text-center font-bold font-sans text-white">{title}</h2>
         {items.map((item, index) => (
           <Card
             key={index}

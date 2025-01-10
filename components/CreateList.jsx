@@ -13,6 +13,7 @@ export default function CreateList() {
   const createList = useStore((state) => state.createList);
   const updateList = useStore((state) => state.updateList);
   const fetchItems = useStore((state) => state.fetchListItems);
+  const [showCustomCategory, setShowCustomCategory] = useState(false);
   const listId = useStore((state) => state.listId);
   const [loading, setLoading] = useState(false);
   const [items, setItems] = useState([
@@ -33,37 +34,47 @@ export default function CreateList() {
     setItems(newItems);
   };
 
+  // Function to reset the form
+  const resetForm = (e) => {
+    setItems([{ name: "", description: "", imageUrl: "" }]); // Reset to one item field
+    setShowCustomCategory(false); // Reset custom category visibility
+    setError(""); // Clear any errors
+    e.target.reset(); // Reset the form inputs
+  };
 
   async function handleSubmit(e) {
-    e.preventDefault()
-    setLoading(true)
-    setError('')
+    e.preventDefault();
+    setLoading(true);
+    setError("");
 
-    const formData = new FormData(e.target)
+    const formData = new FormData(e.target);
     const listData = {
-      title: formData.get('title'),
-      category: formData.get('category'),
-      items: items.filter(item => item.name.trim() !== '') // Only include items with names
-    }
+      title: formData.get("title"),
+      category: formData.get("category"),
+      items: items.filter((item) => item.name.trim() !== ""), // Only include items with names
+    };
 
     try {
-        if(listId===null){
-            await createList(listData)
-        }else{
-            await updateList(listData,listId)
-        }
-      await fetchItems(listId)
-      console.log(listId)
-    }catch (error) {
-      setError(error.message)
+      if (listId === null) {
+        await createList(listData);
+      } else {
+        await updateList(listData, listId);
+      }
+      await fetchItems(listId);
+      // Reset the form after successful submission
+      useStore.getState().toggleRefetchTrigger();
+      resetForm();
+    } catch (error) {
+      setError(error.message);
     } finally {
-      setLoading(false)
+      setLoading(false);
+      resetForm();
     }
   }
 
   return (
     <div className="container mx-auto py-8 px-4">
-      <Card className="max-w-2xl  p-6">
+      <Card className="max-w-2xl p-6">
         <h1 className="text-2xl font-bold mb-6">Create New WhatTo List</h1>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
@@ -72,18 +83,31 @@ export default function CreateList() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">Category</label>
+            <label className="block text-sm font-medium mb-2 font-sans">
+              Category
+            </label>
             <select
               name="category"
               className="w-full p-2 border rounded"
               required
+              onChange={(e) =>
+                setShowCustomCategory(e.target.value === "Create")
+              }
             >
               <option value="">Select a category</option>
               <option value="Food">Food</option>
               <option value="Places">Places</option>
               <option value="Music">Music</option>
               <option value="Cars">Cars</option>
+              <option value="Create">Create your own Category</option>
             </select>
+            {showCustomCategory && (
+              <Input
+                name="customCategory"
+                placeholder="Enter custom category"
+                className="w-full p-2 border rounded mt-2"
+              />
+            )}
           </div>
 
           <div className="space-y-4">
@@ -123,7 +147,6 @@ export default function CreateList() {
           </div>
 
           <Button type="submit" className="w-full" disabled={loading}>
-            
             {listId ? "Update List" : "Create List"}
           </Button>
         </form>
