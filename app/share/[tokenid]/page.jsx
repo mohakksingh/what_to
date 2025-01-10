@@ -38,6 +38,7 @@ const SharePage = ({params}) => {
 
   const handleVote = async (itemId) => {
     try {
+      setIsVoting(true);
       const response = await fetch(`/api/vote`, {
         method: "POST",
         headers: {
@@ -45,30 +46,31 @@ const SharePage = ({params}) => {
         },
         body: JSON.stringify({ itemId }),
       });
+  
       if (!response.ok) {
-        throw new Error("Failed to vote");
+        const error = await response.json();
+        throw new Error(error.error || "Failed to vote");
       }
+  
       const data = await response.json();
-      setList((prevList) => ({
-        ...prevList,
-        items: prevList.items.map((item) =>
+  
+      // Update the items state with the new vote count
+      setItems((prevItems) =>
+        prevItems.map((item) =>
           item.id === itemId
             ? {
                 ...item,
-                votes: Array.isArray(item.votes)
-                  ? data.action === "added"
-                    ? [...item.votes, { id: "temp" }]
-                    : item.votes.slice(0, -1)
-                  : data.action === "added"
-                  ? [{ id: "temp" }]
-                  : [],
+                votes: Array.from({ length: data.voteCount }), // Simulate votes array
               }
             : item
-        ),
-      }));
-      toast.success("Your vote has been recorded");
+        )
+      );
+  
+      toast.success(`Vote ${data.action} successfully!`);
     } catch (error) {
       toast.error(error.message || "Failed to process your vote");
+    } finally {
+      setIsVoting(false);
     }
   };
 
